@@ -7,6 +7,7 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/OCP/pom.xml" />
         <option value="$PROJECT_DIR$/SRP/pom.xml" />
+        <option value="$PROJECT_DIR$/LSP/pom.xml" />
       </list>
     </option>
   </component>
