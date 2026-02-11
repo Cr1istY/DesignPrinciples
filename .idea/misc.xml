@@ -10,6 +10,7 @@
         <option value="$PROJECT_DIR$/LSP/pom.xml" />
         <option value="$PROJECT_DIR$/LoD/pom.xml" />
         <option value="$PROJECT_DIR$/ISP/pom.xml" />
+        <option value="$PROJECT_DIR$/DIP/pom.xml" />
       </list>
     </option>
   </component>
