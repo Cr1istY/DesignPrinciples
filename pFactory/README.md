@@ -270,3 +270,144 @@ public class NormalUserServiceFactory extends UserServiceFactory {
 
 ### 抽象工厂模式
 
+相比于工厂方法模式，抽象方法模式将各种具体的产品进行分类。
+
+例如，武器可以分为不同的类，而我们又可以将这些类根据各自的品牌进行分类。
+
+举一个赛博朋克中的例子，对于突击步枪这一个抽象概念来说，如果给让荒坂公司生产，那它就会生产荒坂野分。同理，如果让军用科技来生产，则会是军用科技-阿贾克斯。
+
+写成代码：
+
+首先，定义这些具体的产品及其接口。
+
+```java
+// 步枪接口
+public interface AssaultRifle {
+    void fire();
+    String getCorporateProtocol(); // 企业专属协议
+}
+
+// 手枪接口
+public interface Pistol {
+    void aim();
+    boolean hasSmartLink(); // 是否支持自动瞄准
+} 
+
+```
+
+对于荒坂公司的产品线，有：
+
+```java
+class ArasakaYabumi implements AssaultRifle {
+    @Override
+    public void fire() {
+        System.out.println("【荒坂野分】");
+    }
+    
+    @Override
+    public String getCorporateProtocol() {
+        return "NEUROTOXIN_COATING | CORPORATE_OATH_ENFORCED";
+    }
+}
+
+class ArasakaShiShi implements Pistol {
+    @Override
+    public void aim() {
+        System.out.println("【荒坂狮子】");
+    }
+
+    @Override
+    public boolean hasSmartLink() {
+        return true; // 荒坂武器强制神经绑定
+    }
+}
+```
+
+同理，军用科技则有以下产品线：
+
+```java
+class MilitechAjax implements AssaultRifle {
+    @Override
+    public void fire() {
+        System.out.println("【军用科技-阿贾克斯】");
+    }
+    
+    @Override
+    public String getCorporateProtocol() {
+        return "REDUNDANT_SAFETY_SYSTEMS | MILSPEC_CERTIFIED";
+    }
+}
+
+class MilitechMantis implements Pistol {
+    @Override
+    public void aim() {
+        System.out.println("【军用科技螳螂】");
+    }
+    
+    @Override
+    public boolean hasSmartLink() {
+        return false; // 军用科技物理扳机（防黑客）
+    }
+}
+```
+
+现在，我们有了具体的产品。开始建立抽象工厂，用来定义武器族标准。
+
+```java
+interface CyberpunkWeaponFactory {
+    AssaultRifle createAssaultRifle(); // 创建步枪
+    Pistol createPistol();              // 创建手枪（关键：产品族完整性！）
+}
+```
+
+开始定义具体工厂，即荒坂工厂和军用科技工厂。
+
+```java
+class ArasakaFactory implements CyberpunkWeaponFactory {
+    @Override
+    public AssaultRifle createAssaultRifle() {
+        return new ArasakaYabumi();
+    }
+    
+    @Override
+    public Pistol createPistol() {
+        return new ArasakaShiShi();
+    }
+}
+
+class MilitechFactory implements CyberpunkWeaponFactory {
+    @Override
+    public AssaultRifle createAssaultRifle() {
+        return new MilitechAjax();
+    }
+
+    @Override
+    public Pistol createPistol() {
+        return new MilitechMantis();
+    }
+}
+```
+
+此后，如果我们想要使用不同的产品，只需要在客户端创建不同的工厂即可，例如，下面的代码使用荒坂产品线。
+
+```java
+public static void main() {
+    CyberpunkWeaponFactory factory = new ArasakaFactory();
+    AssaultRifle rifle = factory.createAssaultRifle();
+    rifle.fire();
+    // 结果为：【荒坂野分】
+}
+```
+
+#### 抽象工厂模式优缺点
+
+优点：
+- 当一个产品族中的多个对象被设计成一起工作时，它能保证客户端始终只使用同一产品族中的对象。
+
+缺点：
+- 当产品族中需要增加一个新的产品时，所有的工厂类都需要进行修改。
+
+使用场景：
+- 当需要创建的对象是一系列相互关联或相互依赖的产品族时，如电器工厂中的电视机、洗衣机、空调等。
+- 系统中有多个产品族，但每次只使用其中一个产品族。
+- 系统中提供了产品的类库，且所有产品的接口相同，客户端不依赖产品实例的创建细节和内部结构。
